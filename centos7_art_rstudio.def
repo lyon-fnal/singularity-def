@@ -1,0 +1,54 @@
+# Pull centos 7 from Docker and augment
+
+BootStrap: docker
+From: centos:7
+
+%runscript
+	~/startup_centos7_art_rstudio
+
+# Run outside of the container
+%setup
+	cp slf7.repo "$SINGULARITY_ROOTFS/root/"
+
+# Run within the container
+%post
+	echo '' >>  /environment
+	echo 'export UPS_FLAVOR_OVERRIDE="-H Linux64bit+3.10-2.17"' >> /environment
+	echo 'export UPS_OVERRIDE="-H Linux64bit+3.10-2.17"'        >> /environment
+
+	mkdir /cvmfs
+	mkdir /Users
+	mkdir /gm2
+
+	yum -y update
+	yum clean all
+	yum -y install epel-release redhat-lsb-core perl expat-devel glibc-devel gdb time git
+	yum -y install freetype-devel libXpm-devel libXmu-devel mesa-libGL-devel mesa-libGLU-devel
+	yum -y install libjpeg libpng tar zip bzip2 patch openssl-devel wget sudo strace
+	yum clean all
+	yum -y install bind-utils libxt-devel xorg-x11-apps
+	yum -y install libpng-devel libcurl-devel libxml2-devel
+	yum -y install R-devel
+	yum clean all
+
+	cp /root/slf7.repo /etc/yum.repos.d/slf.repo
+	wget http://ftp.scientificlinux.org/linux/scientific/7.2/x86_64/os/RPM-GPG-KEY-sl
+	wget http://ftp.scientificlinux.org/linux/scientific/7.2/x86_64/os/RPM-GPG-KEY-sl7
+	rpm --import RPM-GPG-KEY-sl
+	rpm --import RPM-GPG-KEY-sl7
+	rm -f RPM-GPG-KEY-sl
+	rm -f RPM-GPG-KEY-sl7
+	yum install -y --enablerepo=fermilab-primary fermilab-base_kerberos fermilab-util_kx509 cigetcert
+	yum clean all
+	wget http://computing.fnal.gov/authentication/krb5conf/Linux/krb5.conf -O /etc/krb5.conf
+
+	rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+	yum install -y yum-plugin-priorities
+	rpm -Uvh https://repo.grid.iu.edu/osg/3.3/osg-3.3-el7-release-latest.rpm
+	yum install -y osg-wn-client
+	yum clean all
+
+	rpm -Uvh https://s3.amazonaws.com/rstudio-dailybuilds/rstudio-server-rhel-1.1.143-x86_64.rpm
+	echo 'www-address=127.0.0.1' > /etc/rstudio/rserver.conf
+
+

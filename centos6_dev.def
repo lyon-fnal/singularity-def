@@ -1,0 +1,26 @@
+# Pull centos 6.7 from Docker and augment
+
+BootStrap: docker
+From: centos:6.7
+
+# Run within the container
+%post
+  echo '' >>  /environment
+  echo 'export UPS_FLAVOR_OVERRIDE="-H Linux64bit+2.6-2.12"' >> /environment
+  echo 'export UPS_OVERRIDE="-H Linux64bit+2.6-2.12"'       >> /environment
+  mkdir /cvmfs
+  mkdir /Users
+
+  # We do lots of yum clean so we can make the container small
+	yum -y update
+	yum clean all
+	yum -y install epel-release redhat-lsb-core perl expat-devel glibc-devel gdb time git
+	yum clean all
+	yum -y install freetype-devel libXpm-devel libXmu-devel mesa-libGL-devel mesa-libGLU-devel
+	yum clean all
+	yum -y install libjpeg libpng tar zip bzip2 patch openssl-devel wget sudo strace
+	yum clean all
+	yum -y install bind-utils libxt-devel xorg-x11-apps
+	yum clean all
+	yum -y install R-devel
+	yum clean all
