@@ -8,7 +8,7 @@ When creating an image, you typically need to make it much larger than the final
 
 ```bash
 $ mv centos6_dev.img centos6_dev_big.img
-$ singularity exec centos6_dev_big.img df -h
+$ singularity exec centos6_dev_big.img df -h /
 Filesystem      Size  Used Avail Use% Mounted on
 singularity     1.2G  542M  580M  49% /
 
