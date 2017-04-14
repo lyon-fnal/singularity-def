@@ -16,11 +16,10 @@ The purpose of this container is CENTOS 6 (similar to SLF6) development where CV
 
 ## Running on a Mac
 
-Make sure that the cvmfs mounts are there (use `cvmfs_mount`). 
-
 ```bash
 cd somewhere/singularity-vm
 vagrant ssh -- -Y
+cvmfs_mount gm2 ; cvmfs_mount fermilab
 singularity shell -p --shell /bin/bash -B /cvmfs,/Users /vagrant/images/centos6_dev.img --norc
 ```
 
