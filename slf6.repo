@@ -1,0 +1,26 @@
+[slf]
+name=Scientific Linux Fermi 6.7 - x86_64
+baseurl=http://linux1.fnal.gov/linux/slf/slf$releasever/$basearch/os ftp://linux1.fnal.gov/linux/slf/slf$releasever/$basearch/os ftp://linux.fnal.gov/linux/slf/slf$releasever/$basearch/os
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-sl file:///etc/pki/rpm-gpg/RPM-GPG-KEY-sl file:///etc/pki/rpm-gpg/RPM-GPG-KEY-sl6 file:///etc/pki/rpm-gpg/RPM-GPG-KEY-cern
+
+failovermethod=priority
+priority=10
+[slf-security]
+name=Scientific Linux Fermi slf6.7 - Security
+baseurl=http://linux1.fnal.gov/linux/fermi/slf6.7/$basearch/updates/security/ ftp://linux1.fnal.gov/linux/fermi/slf6.7/$basearch/updates/security/ ftp://linux.fnal.gov/linux/fermi/slf6.7/$basearch/updates/security/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-sl file:///etc/pki/rpm-gpg/RPM-GPG-KEY-sl6 file:///etc/pki/rpm-gpg/RPM-GPG-KEY-cern
+
+failovermethod=priority
+priority=10
+[slf-source]
+name=Scientific Linux Fermi slf6.7 - Source
+baseurl=http://linux1.fnal.gov/linux/fermi/slf6.7/SRPMS/ ftp://linux1.fnal.gov/linux/fermi/slf6.7/SRPMS/ ftp://linux.fnal.gov/linux/fermi/slf6.7/SRPMS/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-sl file:///etc/pki/rpm-gpg/RPM-GPG-KEY-sl6 file:///etc/pki/rpm-gpg/RPM-GPG-KEY-cern
+failovermethod=priority
+priority=10

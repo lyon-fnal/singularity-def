@@ -4,21 +4,40 @@
 BootStrap: docker
 From: centos:latest
 
+# Run outside of the container
+%setup
+	cp slf7.repo "$SINGULARITY_ROOTFS/root/"
+
 # Run within the container
 %post
   echo '' >>  /environment
   echo 'export UPS_FLAVOR_OVERRIDE="-H Linux64bit+3.10-2.17"' >> /environment
   echo 'export UPS_OVERRIDE="-H Linux64bit+3.10-2.17"'        >> /environment
-  mkdir -p /cvmfs
-  mkdir -p /Users
-  mkdir -p /gm2
+  mkdir -p /cvmfs /Users /exp /pnfs /grid
 
   # We do lots of yum clean so we can make the container small
-	yum -y update
-	yum clean all
-	yum -y install epel-release redhat-lsb-core perl expat-devel glibc-devel gdb time git
-	yum clean all
-	yum -y install freetype-devel libXpm-devel libXmu-devel mesa-libGL-devel mesa-libGLU-devel
-	yum clean all
-	yum -y install libjpeg libpng tar zip bzip2 patch openssl-devel wget sudo strace
-	yum clean all
+  yum -y update
+  yum clean all
+  yum -y install epel-release redhat-lsb-core perl expat-devel glibc-devel gdb time git
+  yum clean all
+  yum -y install freetype-devel libXpm-devel libXmu-devel mesa-libGL-devel mesa-libGLU-devel
+  yum clean all
+  yum -y install libjpeg libpng libtiff tar zip bzip2 patch openssl-devel wget sudo strace
+  yum clean all
+
+  cp /root/slf7.repo /etc/yum.repos.d/slf.repo
+  wget http://ftp.scientificlinux.org/linux/scientific/7.2/x86_64/os/RPM-GPG-KEY-sl
+  wget http://ftp.scientificlinux.org/linux/scientific/7.2/x86_64/os/RPM-GPG-KEY-sl7
+  rpm --import RPM-GPG-KEY-sl
+  rpm --import RPM-GPG-KEY-sl7
+  rm -f RPM-GPG-KEY-sl
+  rm -f RPM-GPG-KEY-sl7
+  yum install -y --enablerepo=fermilab-primary fermilab-base_kerberos fermilab-util_kx509 cigetcert
+  yum clean all
+  wget http://computing.fnal.gov/authentication/krb5conf/Linux/krb5.conf -O /etc/krb5.conf
+
+  #rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  yum install -y yum-plugin-priorities
+  rpm -Uvh https://repo.grid.iu.edu/osg/3.3/osg-3.3-el7-release-latest.rpm
+  yum install -y osg-wn-client
+  yum clean all

@@ -17,9 +17,7 @@ From: centos:7
 	echo 'export UPS_FLAVOR_OVERRIDE="-H Linux64bit+3.10-2.17"' >> /environment
 	echo 'export UPS_OVERRIDE="-H Linux64bit+3.10-2.17"'        >> /environment
 
-	mkdir -p /cvmfs
-	mkdir -p /Users
-	mkdir -p /gm2
+	mkdir -p /cvmfs /Users /exp /pnfs /grid
 
 	yum -y update
 	yum clean all
@@ -28,7 +26,7 @@ From: centos:7
 	yum -y install libjpeg libpng tar zip bzip2 patch openssl-devel wget sudo strace
 	yum clean all
 	yum -y install bind-utils libxt-devel xorg-x11-apps
-	yum -y install libpng-devel libcurl-devel libxml2-devel
+	yum -y install libpng-devel libtiff libcurl-devel libxml2-devel
 	yum -y install R-devel
 	yum clean all
 
