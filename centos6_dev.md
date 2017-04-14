@@ -19,5 +19,12 @@ The purpose of this container is CENTOS 6 (similar to SLF6) development where CV
 Make sure that the cvmfs mounts are there (use `cvmfs_mount`). 
 
 ```bash
-singularity shell -p -H /vagrant/homes/centos_dev:/home/me --shell /bin/bash -B /cvmfs,/Users /vagrant/images/centos6_dev.img
+cd somewhere/singularity-vm
+vagrant ssh -- -Y
+singularity shell -p --shell /bin/bash -B /cvmfs,/Users /vagrant/images/centos6_dev.img --norc
 ```
+
+Notes:
+
+* If you plan to run `root`, then your home area must have the `.Xauthority` file that was created when you logged into the vagrant VM.
+* Your container's home area likely needs to be the home area of the Vagrant VM. That will have `.bashrc` and simmilar files for Ubuntu. To not run those, you need the `--norc` option as shown above.
