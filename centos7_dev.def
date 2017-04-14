@@ -1,14 +1,14 @@
-# Pull centos 6.7 from Docker and augment
-# sudo singularity create -s 1200 ../images/centos6_dev.img
+# Pull centos 7 from Docker and augment
+# sudo singularity create -s 1200 ../images/centos7_dev.img
 
 BootStrap: docker
-From: centos:6.7
+From: centos:latest
 
 # Run within the container
 %post
   echo '' >>  /environment
-  echo 'export UPS_FLAVOR_OVERRIDE="-H Linux64bit+2.6-2.12"' >> /environment
-  echo 'export UPS_OVERRIDE="-H Linux64bit+2.6-2.12"'       >> /environment
+  echo 'export UPS_FLAVOR_OVERRIDE="-H Linux64bit+3.10-2.17"' >> /environment
+  echo 'export UPS_OVERRIDE="-H Linux64bit+3.10-2.17"'        >> /environment
   mkdir -p /cvmfs
   mkdir -p /Users
   mkdir -p /gm2

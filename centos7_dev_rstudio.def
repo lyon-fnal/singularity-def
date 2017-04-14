@@ -1,10 +1,11 @@
 # Pull centos 7 from Docker and augment
+# sudo singularity create -s 1800 ../images/centos7_dev_rstudio.img
 
 BootStrap: docker
 From: centos:7
 
 %runscript
-	~/startup_centos7_art_rstudio
+	~/startup_centos7_dev_rstudio
 
 # Run outside of the container
 %setup
@@ -16,9 +17,9 @@ From: centos:7
 	echo 'export UPS_FLAVOR_OVERRIDE="-H Linux64bit+3.10-2.17"' >> /environment
 	echo 'export UPS_OVERRIDE="-H Linux64bit+3.10-2.17"'        >> /environment
 
-	mkdir /cvmfs
-	mkdir /Users
-	mkdir /gm2
+	mkdir -p /cvmfs
+	mkdir -p /Users
+	mkdir -p /gm2
 
 	yum -y update
 	yum clean all
@@ -42,13 +43,13 @@ From: centos:7
 	yum clean all
 	wget http://computing.fnal.gov/authentication/krb5conf/Linux/krb5.conf -O /etc/krb5.conf
 
-	rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+	#rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 	yum install -y yum-plugin-priorities
 	rpm -Uvh https://repo.grid.iu.edu/osg/3.3/osg-3.3-el7-release-latest.rpm
 	yum install -y osg-wn-client
 	yum clean all
 
-	rpm -Uvh https://s3.amazonaws.com/rstudio-dailybuilds/rstudio-server-rhel-1.1.143-x86_64.rpm
+	rpm -Uvh https://s3.amazonaws.com/rstudio-dailybuilds/rstudio-server-rhel-1.1.142-x86_64.rpm
 	echo 'www-address=127.0.0.1' > /etc/rstudio/rserver.conf
 
 
