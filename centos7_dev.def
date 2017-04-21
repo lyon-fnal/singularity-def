@@ -6,7 +6,8 @@ From: centos:latest
 
 # Run outside of the container
 %setup
-	cp slf7.repo "$SINGULARITY_ROOTFS/root/"
+  cp slf7.repo "$SINGULARITY_ROOTFS/root/"
+  git log -1 --pretty=format:"%h %d %ci %s" > $SINGULARITY_ROOTFS/etc/gitCommit
 
 # Run within the container
 %post
