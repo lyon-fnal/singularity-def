@@ -11,6 +11,7 @@ The purpose of this container is CENTOS 6 (similar to SLF6) development where CV
 * Mount point for `/exp` (useful for mounting your experiment's disk like `/gm2` or `/nova`)
 * Mount point for `/pnfs` (useful if the host has `/pnfs` mounted with NFS4; access may be slow)
 * Mount point for `/grid` (useful for `/grid/fermi/app` if the host has it)
+* /etc/gridCommit has the commit hash when this container was created and bootstrap'ed
 
 # Running the Container
 
