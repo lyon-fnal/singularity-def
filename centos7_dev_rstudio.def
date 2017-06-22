@@ -4,6 +4,11 @@
 BootStrap: docker
 From: centos:7
 
+%labels
+AUTHOR Adam Lyon
+R_VERSION 3.4
+RSTUDIO_VERSION 1.1.281
+
 %runscript
 	~/startup_centos7_dev_rstudio
 
@@ -12,12 +17,11 @@ From: centos:7
   cp slf7.repo "$SINGULARITY_ROOTFS/root/"
   git log -1 --pretty=format:"%h %d %ci %s" > $SINGULARITY_ROOTFS/etc/gitCommit
 
-# Run within the container
-%post
-	echo '' >>  /environment
-	echo 'export UPS_FLAVOR_OVERRIDE="-H Linux64bit+3.10-2.17"' >> /environment
-	echo 'export UPS_OVERRIDE="-H Linux64bit+3.10-2.17"'        >> /environment
+%environment
+export UPS_FLAVOR_OVERRIDE="-H Linux64bit+3.10-2.17"
+export UPS_OVERRIDE="-H Linux64bit+3.10-2.17"
 
+%post -c /bin/bash
 	mkdir -p /cvmfs /Users /exp /pnfs /grid
 
 	yum -y update
@@ -42,13 +46,12 @@ From: centos:7
 	yum clean all
 	wget http://computing.fnal.gov/authentication/krb5conf/Linux/krb5.conf -O /etc/krb5.conf
 
-	#rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 	yum install -y yum-plugin-priorities
 	rpm -Uvh https://repo.grid.iu.edu/osg/3.3/osg-3.3-el7-release-latest.rpm
 	yum install -y osg-wn-client
 	yum clean all
 
-	rpm -Uvh https://s3.amazonaws.com/rstudio-dailybuilds/rstudio-server-rhel-1.1.143-x86_64.rpm
+	rpm -Uvh https://s3.amazonaws.com/rstudio-dailybuilds/rstudio-server-rhel-1.1.281-x86_64.rpm
 	echo 'www-address=127.0.0.1' > /etc/rstudio/rserver.conf
 
 
