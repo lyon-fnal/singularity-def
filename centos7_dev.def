@@ -1,19 +1,24 @@
 # Pull centos 7 from Docker and augment
-# sudo singularity create -s 1200 ../images/centos7_dev.img
+# sudo singularity create -s 1600 ../images/centos7_dev.img
 
 BootStrap: docker
 From: centos:latest
 
-# Run outside of the container
+%labels
+AUTHOR Adam Lyon
+
 %setup
+# Run outside of the container
+# Set up the gitCommit file and copy slf7.repo
   cp slf7.repo "$SINGULARITY_ROOTFS/root/"
   git log -1 --pretty=format:"%h %d %ci %s" > $SINGULARITY_ROOTFS/etc/gitCommit
 
-# Run within the container
-%post
-  echo '' >>  /environment
-  echo 'export UPS_FLAVOR_OVERRIDE="-H Linux64bit+3.10-2.17"' >> /environment
-  echo 'export UPS_OVERRIDE="-H Linux64bit+3.10-2.17"'        >> /environment
+%environment
+export UPS_FLAVOR_OVERRIDE="-H Linux64bit+3.10-2.17"
+export UPS_OVERRIDE="-H Linux64bit+3.10-2.17"
+
+%post -c /bin/bash
+  # Runs within container
   mkdir -p /cvmfs /Users /exp /pnfs /grid
 
   # We do lots of yum clean so we can make the container small

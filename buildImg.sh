@@ -1,45 +1,58 @@
 #!/bin/bash
 #  --- Create, bootstrap, shrink and copy/compress an image from a .def file
+#	
+#  Usage: buildImg.sh defFile imgSize imgDir
 #
 # Run this script where the .def files exist
 # It is assumed that the images will go into ../images
 # The second line of the .def file needs to be the singularity create call
 set -x
 
-# Keep the def file
+# Record arguments
 deff=$1
+imgSize=$2
+imgDest=$3
 
-# Create the image - the second line of the def file says what to do
-cmd=$(sed '2q;d' $deff | sed 's/# //')
-eval $cmd
+# See https://stackoverflow.com/questions/2664740/extract-file-basename-without-path-and-extension-in-bash
+b=${deff##*/}
+imgBase=${b%.*}
+imgFile=${imgBase}.img
+sqshFile=${imgBase}.sqsh
+tarFile=${imgBase}.tar
 
-# Capture the image file name
-img=$(echo ${cmd##* })
+echo ${imgBase}
+echo ${imgFile}
+echo ${sqshFile}
+echo ${tarFile}
 
-# Run boot strap
-sudo singularity bootstrap $img $deff
+# Clean up old files
+rm -f ${imgDest}/${imgFile}
+rm -f ${imgDest}/${sqshFile}
+sudo rm -rf /tmp/${imgBase}*
 
-# Shrink it
-# Determine actual size of image (giving 20 MB for overhead)
-realSize=$(singularity exec $img df -k / | tail -1 | awk '{print int(int($3)/1000)+20}')
+# Create the image
+sudo singularity create -s $imgSize /tmp/${imgFile}
 
-# Rename the old image as big
-pushd ../images
-bigImg=$(basename $img .img)_big.img
-smallImg=$(basename $img)
-sudo mv $img $bigImg
+# Run bootstrap
+sudo singularity bootstrap /tmp/${imgFile} $deff
 
-# Create and populate the small image
-sudo singularity create -s $realSize $smallImg
-sudo singularity export $bigImg | sudo singularity import $smallImg
+# Export 
+sudo singularity export /tmp/${imgFile} > /tmp/${tarFile}
 
-# Make the compressed image for copying
-gzip -c $smallImg > ${smallImg}.gz
-
-ls -lh $bigImg ${smallImg}*
-sudo rm -f $bigImg
-
+# Unpack the tar file
+mkdir /tmp/${imgBase}
+pushd /tmp/${imgBase}
+sudo tar xf /tmp/${tarFile}
 popd
 
+# Make the squashed image
+sudo mksquashfs /tmp/${imgBase} ${imgDest}/${sqshFile}
 
+# Make the small image file
+realSize=$(sudo du -ks /tmp/${imgBase} | awk '{print int(int($1)/1000)+20}')
+sudo singularity create -s $realSize ${imgDest}/${imgFile}
 
+# Create and populate the small image
+sudo singularity export /tmp/${imgFile} | sudo singularity import ${imgDest}/${imgFile}
+
+sudo rm -rf /tmp/${imgBase}*
