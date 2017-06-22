@@ -43,16 +43,23 @@ sudo singularity export /tmp/${imgFile} > /tmp/${tarFile}
 mkdir /tmp/${imgBase}
 pushd /tmp/${imgBase}
 sudo tar xf /tmp/${tarFile}
+rm -f /tmp/${tarFile}
 popd
 
 # Make the squashed image
 sudo mksquashfs /tmp/${imgBase} ${imgDest}/${sqshFile}
 
 # Make the small image file
-realSize=$(sudo du -ks /tmp/${imgBase} | awk '{print int(int($1)/1000)+20}')
+realSize=$(sudo du -ks /tmp/${imgBase} | awk '{print int(int($1)/1000)+50}')
 sudo singularity create -s $realSize ${imgDest}/${imgFile}
+
+# Don't need the big directory anymore
+sudo rm -rf /tmp/${imgBase}
 
 # Create and populate the small image
 sudo singularity export /tmp/${imgFile} | sudo singularity import ${imgDest}/${imgFile}
+
+sudo chown aUser ${imgDest}/*
+sudo chgrp aUser ${imgDest}/*
 
 sudo rm -rf /tmp/${imgBase}*
