@@ -4,16 +4,19 @@
 BootStrap: docker
 From: centos:6.7
 
-# Run outside of the container
+%labels
+AUTHOR Adam Lyon
+
 %setup
   cp slf6.repo "$SINGULARITY_ROOTFS/root/"
   git log -1 --pretty=format:"%h %d %ci %s" > $SINGULARITY_ROOTFS/etc/gitCommit
 
+%environment
+export UPS_FLAVOR_OVERRIDE="-H Linux64bit+2.6-2.12"
+export UPS_OVERRIDE="-H Linux64bit+2.6-2.12"
+
 # Run within the container
-%post
-  echo '' >>  /environment
-  echo 'export UPS_FLAVOR_OVERRIDE="-H Linux64bit+2.6-2.12"' >> /environment
-  echo 'export UPS_OVERRIDE="-H Linux64bit+2.6-2.12"'       >> /environment
+%post -c /bin/bash
   mkdir -p /cvmfs /Users /exp /pnfs /grid
 
   # We do lots of yum clean so we can make the container small
