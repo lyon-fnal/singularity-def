@@ -42,8 +42,11 @@ export UPS_OVERRIDE="-H Linux64bit+3.10-2.17"
   yum clean all
   wget http://computing.fnal.gov/authentication/krb5conf/Linux/krb5.conf -O /etc/krb5.conf
 
-  #rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   yum install -y yum-plugin-priorities
   rpm -Uvh https://repo.grid.iu.edu/osg/3.3/osg-3.3-el7-release-latest.rpm
   yum install -y osg-wn-client
+
+  curl -o /etc/yum.repos.d/igprof.repo https://bintray.com/igprof/slc7_x86-64-test/rpm
+  yum update
+  yum install -y igprof
   yum clean all
