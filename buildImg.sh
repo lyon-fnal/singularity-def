@@ -5,7 +5,6 @@
 #
 # Run this script where the .def files exist
 # It is assumed that the images will go into ../images
-# The second line of the .def file needs to be the singularity create call
 set -x
 
 # Record arguments
@@ -61,5 +60,3 @@ sudo singularity export /tmp/${imgFile} | sudo singularity import ${imgDest}/${i
 
 sudo chown aUser ${imgDest}/*
 sudo chgrp aUser ${imgDest}/*
-
-sudo rm -rf /tmp/${imgBase}*
